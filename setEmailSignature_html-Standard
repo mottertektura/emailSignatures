@@ -1,0 +1,94 @@
+#!/bin/bash
+# Creates html signature from Active Directory info for current user.
+currentUser=`stat -f '%Su' /dev/console`
+realName=`dscl . read /Users/$currentUser RealName | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d' | awk '{print $1}'`
+firstName=`dscl . read /Users/$currentUser FirstName | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d' | awk '{print $1}'`
+lastName=`dscl . read /Users/$currentUser LastName | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d' | awk '{print $1}'`
+# firstName=`dscl . read /Users/$currentUser RealName | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d' | awk '{print $2}'`
+# lastName=`dscl . read /Users/$currentUser RealName | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d' | awk '{print $1}' | sed 's/.$//'`
+jobTitle=`dscl . -read /Users/$currentUser JobTitle | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+phoneNumber=`dscl . -read /Users/$currentUser PhoneNumber | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+email=`dscl . -read /Users/$currentUser EMailAddress | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+street=`dscl . -read /Users/$currentUser Street | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+city=`dscl . -read /Users/$currentUser City | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+state=`dscl . -read /Users/$currentUser State | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+postalCode=`dscl . -read /Users/$currentUser PostalCode | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+country=`dscl . -read /Users/$currentUser Country | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'`
+vnet=`dscl . -read /Users/$currentUser PhoneNumber | awk -F: '{print $NF}' | sed -e 's/^ *//;/^$/d'| tail -c 5`
+cat > /Library/Application\ Support/PRAHS/Signatures/PRA\ Email\ Signature\ macOS\ -\ Standard.html <<- _EOF_
+<html>
+
+<head>
+<meta name=Title content="">
+<meta name=Keywords content="">
+<meta http-equiv=Content-Type content="text/html; charset=macintosh">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Arial;
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:Calibri;}
+.MsoChpDefault
+	{font-family:Calibri;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body bgcolor=white lang=EN-US>
+
+<div class=WordSection1>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width=623
+ style='margin-left:-5.4pt;border-collapse:collapse;border:none'>
+ <tr>
+  <td width=55 valign=top style='width:54.9pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt'><img
+  width=91 height=90 id="Picture 2" src="https://path/to/file/image01.png"></span></p>
+  </td>
+  <td width=568 valign=top style='width:568.05pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:
+  10.0pt;font-family:Arial;color:#6F7172'>$firstName $lastName</span></b></p>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:8.0pt;
+  font-family:Arial;color:#6F7172'>$jobTitle</span></p>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:8.0pt;
+  font-family:Arial;color:#6F7172'>&nbsp;</span></p>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:8.0pt;
+  font-family:Arial;color:#6F7172'>DIRECT: $phoneNumber &bull; VNET: # 118.$vnet &bull;
+  MOBILE: +1 XXX.XXX.XXXX</span></p>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:8.0pt;
+  font-family:Arial;color:#6F7172'>$street &bull; $city, $state
+  $postalCode &bull; $country &bull; prahs.com</span></p>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:8.0pt;
+  font-family:Arial;color:#6F7172'>&nbsp;</span></p>
+  <p class=MsoNormal style='text-autospace:none'><span style='font-size:11.0pt'><img
+  width=224 height=11 id="Picture 1" src="https://path/to/file/image02.png"></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>
